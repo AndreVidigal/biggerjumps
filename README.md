@@ -17,7 +17,7 @@ npm start
 
 Then open:
 
-- Homepage: [http://localhost:3000/Index.html](http://localhost:3000/Index.html)
+- Homepage: [http://localhost:3000/](http://localhost:3000/) (or [index.html](http://localhost:3000/index.html))
 - Game: [http://localhost:3000/game.html](http://localhost:3000/game.html)
 - A book a day: [http://localhost:3000/abookaday.html](http://localhost:3000/abookaday.html)
 
@@ -36,7 +36,7 @@ Then open the same URLs as above.
 
 | Path                      | Description                                            |
 | ------------------------- | ------------------------------------------------------ |
-| `Index.html`              | Homepage                                               |
+| `index.html`              | Homepage                                               |
 | `game.html`               | Castle Defense game                                    |
 | `abookaday.html`          | Book of the day page (loads `bookaday/book_list.json`) |
 | `styles.css`              | Shared styles                                          |

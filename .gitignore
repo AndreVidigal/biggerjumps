@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build / framework output
+.next/
+out/
+dist/
+build/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs and local tooling
+*.log
+.cursor/
+
+# Env files (keep examples if you add them later)
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
