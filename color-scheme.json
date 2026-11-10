@@ -1,0 +1,12 @@
+{
+  "colors": [
+    { "name": "pure-white", "rgb": "rgb(255, 255, 255)" },
+    { "name": "very-light-gray", "rgb": "rgb(230, 230, 230)" },
+    { "name": "light-gray", "rgb": "rgb(190, 190, 190)" },
+    { "name": "medium-light-gray", "rgb": "rgb(150, 150, 150)" },
+    { "name": "medium-gray", "rgb": "rgb(110, 110, 110)" },
+    { "name": "dark-gray", "rgb": "rgb(70, 70, 70)" },
+    { "name": "very-dark-gray", "rgb": "rgb(35, 30, 38)" },
+    { "name": "pure-black", "rgb": "rgb(0, 0, 0)" }
+  ]
+}

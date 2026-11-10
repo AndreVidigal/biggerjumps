@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>André Vidigal - Personal Webpage</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <p class="intro">
+    <span class="w1">WELCOME</span> <span class="w2">TO</span> <span class="w3">MY</span> <span class="w4">PERSONAL</span> <span class="w5">WEBPAGE.</span><br>
+    <span class="w6">I'M</span> <span class="w2">ANDRÉ VIDIGAL</span> <span class="w1">AND</span> <span class="w3">YOU</span> <span class="w4">can</span> <span class="w5">FIND</span> <span class="w2">MORE</span> <span class="w6">ABOUT</span> <span class="w1">MY</span> <span class="w4">WORK</span> <span class="w3">AND</span> <span class="w2">MY</span> <span class="w5">CONTACTS</span> <span class="w6">BELOW</span>
+  </p>
+
+  <!-- Sprite: run right = sprite-runright.png (1st frame = first frame of sheet), run left = sprite-runleft.png, 8 frames each -->
+  <div class="sprite-run-wrapper" aria-hidden="true">
+    <div class="sprite sprite-archer-run" id="sprite-el"></div>
+  </div>
+  <p class="sprite-link-wrap">
+    <a href="game.html" class="sprite-link">Start game</a>
+    <a href="abookaday.html" class="sprite-link" style="margin-left: 1rem;">A book a day</a>
+  </p>
+
+  <script>
+  (function(){
+    var el = document.getElementById('sprite-el');
+    if (!el) return;
+    // 8 frames each: 4×2 grid at 75% scale (225×263px per frame)
+    var framesRight = ['0 0','-225px 0','-450px 0','-675px 0','0 -263px','-225px -263px','-450px -263px','-675px -263px'];
+    var framesLeft  = ['0 0','-225px 0','-450px 0','-675px 0','0 -263px','-225px -263px','-450px -263px','-675px -263px'];
+    var idxRight = 0, idxLeft = 7; /* left starts at frame 8 and runs backwards (8,7,6...) */
+    var keyHeld = null;
+    var intervalMs = 100;
+
+    function showFrame(direction){
+      if (direction === 'right') {
+        el.style.backgroundImage = 'url("assets/sprite-runright.png")';
+        el.style.backgroundPosition = framesRight[idxRight];
+      } else if (direction === 'left') {
+        el.style.backgroundImage = 'url("assets/sprite-runleft.png")';
+        el.style.backgroundPosition = framesLeft[idxLeft];
+      }
+    }
+
+    function advance(){
+      if (keyHeld === 'right') {
+        idxRight = (idxRight + 1) % 8;
+        el.style.backgroundImage = 'url("assets/sprite-runright.png")';
+        el.style.backgroundPosition = framesRight[idxRight];
+      } else if (keyHeld === 'left') {
+        idxLeft = (idxLeft - 1 + 8) % 8; /* 7→6→5→4→3→2→1→0→7 */
+        el.style.backgroundImage = 'url("assets/sprite-runleft.png")';
+        el.style.backgroundPosition = framesLeft[idxLeft];
+      }
+    }
+
+    setInterval(advance, intervalMs);
+
+    document.addEventListener('keydown', function(e){
+      if (e.repeat) return;
+      if (e.key === 'ArrowRight') { keyHeld = 'right'; showFrame('right'); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { keyHeld = 'left'; showFrame('left'); e.preventDefault(); }
+    });
+    document.addEventListener('keyup', function(e){
+      if (e.key === 'ArrowRight' && keyHeld === 'right') keyHeld = null;
+      else if (e.key === 'ArrowLeft' && keyHeld === 'left') keyHeld = null;
+    });
+
+    el.style.backgroundImage = 'url("assets/sprite-runright.png")';
+    el.style.backgroundPosition = framesRight[0];
+  })();
+  </script>
+</body>
+</html>

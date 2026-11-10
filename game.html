@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Castle Defense</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <style>
+    body { margin: 0; background: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-family: system-ui, sans-serif; }
+    .game-container { position: relative; margin: 4rem 0 1rem; }
+    .game-ui { position: absolute; top: 8px; right: 8px; left: auto; text-align: right; color: #333; font-size: 18px; font-weight: bold; pointer-events: none; z-index: 1; }
+    .game-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: #fff; font-size: 32px; padding: 24px 48px; border-radius: 8px; pointer-events: none; z-index: 2; }
+    .game-paused { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: #fff; font-size: 28px; padding: 20px 40px; border-radius: 8px; pointer-events: none; z-index: 2; }
+    .game-link { margin-top: 1rem; font-size: 1rem; }
+    .game-link a { color: #333; }
+    .game-link a:hover { color: #000; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <p class="game-link"><a href="Index.html">Back to homepage</a></p>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const CANVAS_WIDTH = 800;
+      const CANVAS_HEIGHT = 600;
+      const WALL_WIDTH = 24;
+      const PLAYER_WIDTH = 80;
+      const PLAYER_HEIGHT = 60;
+      const PROJECTILE_RADIUS = 6;
+      const PROJECTILE_VX = 10;
+      const GRAVITY = 0.35;
+      const ENEMY_SIZE = 24;
+      const ENEMY_SPEED = 1.5;
+      const SPAWN_INTERVAL_MS = 2000;
+      const FIRE_INTERVAL_MS = 300;
+
+      function circleVsSquare(cx, cy, r, sx, sy, size) {
+        var closestX = Math.max(sx, Math.min(cx, sx + size));
+        var closestY = Math.max(sy, Math.min(cy, sy + size));
+        var dx = cx - closestX, dy = cy - closestY;
+        return dx * dx + dy * dy <= r * r;
+      }
+
+      var ENEMY_SPAWN_Y_MIN = CANVAS_HEIGHT * 0.75;
+      var ENEMY_SPAWN_Y_MAX = CANVAS_HEIGHT - ENEMY_SIZE;
+
+      function CastleDefenseGame() {
+        var canvasRef = React.useRef(null);
+        var playerImageRef = React.useRef(null);
+        var gameStateRef = React.useRef({
+          enemies: [],
+          projectiles: [],
+          wallHits: 0,
+          gameOver: false,
+          paused: false,
+          lastFire: 0,
+          lastSpawn: 0
+        });
+        var animationIdRef = React.useRef(null);
+
+        React.useEffect(function() {
+          var img = new Image();
+          img.src = 'assets/celtic.png';
+          playerImageRef.current = img;
+        }, []);
+
+        React.useEffect(function() {
+          var canvas = canvasRef.current;
+          if (!canvas) return;
+          var ctx = canvas.getContext('2d');
+          var state = gameStateRef.current;
+
+          function update(now) {
+            if (state.gameOver || state.paused) return;
+            var dt = 1;
+
+            if (state.lastSpawn === 0) state.lastSpawn = now;
+            if (now - state.lastSpawn >= SPAWN_INTERVAL_MS) {
+              state.lastSpawn = now;
+              state.enemies.push({
+                x: CANVAS_WIDTH - ENEMY_SIZE,
+                y: ENEMY_SPAWN_Y_MIN + Math.random() * (ENEMY_SPAWN_Y_MAX - ENEMY_SPAWN_Y_MIN),
+                size: ENEMY_SIZE
+              });
+            }
+
+            state.projectiles.forEach(function(p) {
+              p.vy += GRAVITY;
+              p.x += p.vx * dt;
+              p.y += p.vy * dt;
+            });
+            state.projectiles = state.projectiles.filter(function(p) {
+              return p.y < CANVAS_HEIGHT + PROJECTILE_RADIUS;
+            });
+
+            state.enemies.forEach(function(e) {
+              e.x -= ENEMY_SPEED * dt;
+            });
+
+            state.projectiles = state.projectiles.filter(function(p) {
+              var hit = false;
+              state.enemies = state.enemies.filter(function(e) {
+                if (circleVsSquare(p.x, p.y, PROJECTILE_RADIUS, e.x, e.y, e.size)) {
+                  hit = true;
+                  return false;
+                }
+                return true;
+              });
+              return !hit;
+            });
+
+            state.enemies = state.enemies.filter(function(e) {
+              if (e.x <= WALL_WIDTH) {
+                state.wallHits += 1;
+                if (state.wallHits >= 3) state.gameOver = true;
+                return false;
+              }
+              return true;
+            });
+          }
+
+          function render() {
+            if (!ctx || !canvas) return;
+            var s = gameStateRef.current;
+
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            ctx.fillStyle = '#888';
+            ctx.fillRect(0, 0, WALL_WIDTH, CANVAS_HEIGHT);
+
+            var playerImg = playerImageRef.current;
+            if (playerImg && playerImg.complete && playerImg.naturalWidth > 0) {
+              ctx.drawImage(playerImg, 0, 0, PLAYER_WIDTH, 60);
+            } else {
+              ctx.fillStyle = '#00f';
+              ctx.fillRect(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT);
+            }
+
+            ctx.fillStyle = '#000';
+            s.projectiles.forEach(function(p) {
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, PROJECTILE_RADIUS, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            ctx.fillStyle = '#f00';
+            s.enemies.forEach(function(e) {
+              ctx.fillRect(e.x, e.y, e.size, e.size);
+            });
+
+            if (s.paused) {
+              ctx.fillStyle = 'rgba(0,0,0,0.5)';
+              ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+              ctx.fillStyle = '#fff';
+              ctx.font = '28px system-ui';
+              ctx.textAlign = 'center';
+              ctx.fillText('Paused', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+            }
+          }
+
+          function onKeyDown(e) {
+            var state = gameStateRef.current;
+            if (e.key === ' ') {
+              e.preventDefault();
+              state.paused = !state.paused;
+              return;
+            }
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            if (state.gameOver || state.paused) return;
+            var now = performance.now();
+            if (now - state.lastFire < FIRE_INTERVAL_MS) return;
+            state.lastFire = now;
+            state.projectiles.push({
+              x: PLAYER_WIDTH / 2,
+              y: PLAYER_HEIGHT / 2,
+              vx: PROJECTILE_VX,
+              vy: 0
+            });
+          }
+
+          document.addEventListener('keydown', onKeyDown);
+          state.lastSpawn = 0;
+
+          function tick(now) {
+            update(now);
+            render();
+            animationIdRef.current = requestAnimationFrame(tick);
+          }
+          animationIdRef.current = requestAnimationFrame(tick);
+
+          return function cleanup() {
+            document.removeEventListener('keydown', onKeyDown);
+            if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
+          };
+        }, []);
+
+        var state = gameStateRef.current;
+        return React.createElement('div', { className: 'game-container' },
+          React.createElement('div', { className: 'game-ui' }, 'Wall hits: ' + state.wallHits + ' / 3' + (state.paused ? '  |  Paused' : '')),
+          state.gameOver ? React.createElement('div', { className: 'game-over' }, 'Game Over') : null,
+          React.createElement('canvas', {
+            ref: canvasRef,
+            width: CANVAS_WIDTH,
+            height: CANVAS_HEIGHT,
+            style: { display: 'block', border: '1px solid #ccc' }
+          })
+        );
+      }
+
+      function GameWithUI() {
+        var forceUpdate = React.useState(0)[1];
+        React.useEffect(function() {
+          var id = setInterval(function() {
+            forceUpdate(function(n) { return n + 1; });
+          }, 100);
+          return function() { clearInterval(id); };
+        }, []);
+        return React.createElement(CastleDefenseGame);
+      }
+
+      var root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(React.createElement(GameWithUI));
+    })();
+  </script>
+</body>
+</html>

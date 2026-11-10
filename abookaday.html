@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A book a day</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .abookaday { max-width: 42rem; margin: 4rem 2rem; padding: 0 1rem; }
+    .abookaday h1 { font-size: 1.5rem; color: var(--color-very-light-gray); margin-bottom: 1.5rem; }
+    .abookaday .line { color: var(--color-light-gray); margin: 0.5rem 0; font-family: 'Ostrich Sans', sans-serif; }
+    .abookaday .line strong { color: var(--color-very-light-gray); }
+    .abookaday .cover-img { max-width: 120px; height: auto; display: block; margin: 0.5rem 0; }
+    .abookaday a { color: var(--color-light-gray); }
+  </style>
+</head>
+<body>
+  <div class="abookaday">
+    <h1>A book a day</h1>
+    <p class="line"><strong>title:</strong> <span id="book-title">—</span></p>
+    <p class="line"><strong>author:</strong> <span id="book-author">—</span></p>
+    <p class="line"><strong>cover:</strong> <span id="book-cover-wrap"></span></p>
+    <p class="line"><strong>slug:</strong> <span id="book-slug">—</span></p>
+    <p class="line"><a href="Index.html">← Back home</a></p>
+  </div>
+  <script>
+    (function() {
+      function renderBook(book) {
+        if (!book) return;
+        document.getElementById('book-title').textContent = book.title || '—';
+        document.getElementById('book-author').textContent = book.author || '—';
+        var slugEl = document.getElementById('book-slug');
+        slugEl.textContent = (book.slug !== undefined && book.slug !== null && book.slug !== '') ? book.slug : '—';
+        var coverWrap = document.getElementById('book-cover-wrap');
+        if (book.cover && book.cover.trim() !== '') {
+          var img = document.createElement('img');
+          img.src = book.cover;
+          img.alt = 'Cover: ' + (book.title || '');
+          img.className = 'cover-img';
+          img.onerror = function() { coverWrap.textContent = book.cover; };
+          coverWrap.appendChild(img);
+        } else {
+          coverWrap.textContent = '—';
+        }
+      }
+      function showLoadError() {
+        document.getElementById('book-title').textContent = '(could not load list)';
+        document.getElementById('book-cover-wrap').innerHTML =
+          '<span style="color: var(--color-medium-gray); font-size: 0.9rem;">Open this page via a local server (e.g. <code>npx serve</code> or Python’s <code>http.server</code>), not as a file.</span>';
+      }
+      fetch('bookaday/book_list.json')
+        .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function(books) {
+          if (books && books.length) renderBook(books[0]); else showLoadError();
+        })
+        .catch(showLoadError);
+    })();
+  </script>
+</body>
+</html>

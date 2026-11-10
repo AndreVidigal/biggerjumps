@@ -1,0 +1,80 @@
+@font-face {
+  font-family: 'Ostrich Sans';
+  src: url('assets/OstrichSans-Regular.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Color scheme (from color-scheme.json) */
+:root {
+  --color-pure-white: rgb(255, 255, 255);
+  --color-very-light-gray: rgb(230, 230, 230);
+  --color-light-gray: rgb(190, 190, 190);
+  --color-medium-light-gray: rgb(150, 150, 150);
+  --color-medium-gray: rgb(110, 110, 110);
+  --color-dark-gray: rgb(70, 70, 70);
+  --color-very-dark-gray: rgb(35, 30, 38);
+  --color-pure-black: rgb(0, 0, 0);
+}
+
+/* Intro section */
+.intro {
+  text-align: left;
+  font-size: 2rem;
+  line-height: 1.6;
+  max-width: 42rem;
+  margin: 4rem 0 4rem 2rem;
+  padding: 0 1rem;
+  font-family: 'Ostrich Sans', sans-serif;
+}
+
+/* Word colors using the palette (darker shades for readable text) */
+.intro .w1 { color: var(--color-very-light-gray); }
+.intro .w2 { color: var(--color-light-gray); }
+.intro .w3 { color: var(--color-medium-gray); }
+.intro .w4 { color: var(--color-medium-gray); }
+.intro .w5 { color: var(--color-medium-light-gray); }
+.intro .w6 { color: var(--color-light-gray); }
+.intro .w7 { color: var(--color-very-light-gray); }
+.intro .w8 { color: var(--color-very-light-gray); }
+
+html, body {
+  background-color: var(--color-very-dark-gray);
+  font-family: 'Ostrich Sans', sans-serif;
+}
+
+/* Sprite: run right / run left, 8 frames each, scaled to 75% (225×263px), 4×2 grid */
+.sprite-run-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 263px;
+  margin: 2rem 0;
+}
+
+.sprite {
+  width: 225px;
+  height: 263px;
+  background-repeat: no-repeat;
+  background-size: 900px 525px;
+}
+
+.sprite-archer-run {
+  background-position: 0 0; /* image and position updated by JS */
+}
+
+.sprite-link-wrap {
+  text-align: center;
+  margin: 0.5rem 0 2rem;
+}
+
+.sprite-link {
+  color: var(--color-very-light-gray);
+  font-size: 1.1rem;
+  font-family: 'Ostrich Sans', sans-serif;
+}
+
+.sprite-link:hover {
+  color: var(--color-pure-white);
+}
