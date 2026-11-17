@@ -7,10 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <p class="intro">
-    <span class="w1">WELCOME</span> <span class="w2">TO</span> <span class="w3">MY</span> <span class="w4">PERSONAL</span> <span class="w5">WEBPAGE.</span><br>
-    <span class="w6">I'M</span> <span class="w2">ANDRÉ VIDIGAL</span> <span class="w1">AND</span> <span class="w3">YOU</span> <span class="w4">can</span> <span class="w5">FIND</span> <span class="w2">MORE</span> <span class="w6">ABOUT</span> <span class="w1">MY</span> <span class="w4">WORK</span> <span class="w3">AND</span> <span class="w2">MY</span> <span class="w5">CONTACTS</span> <span class="w6">BELOW</span>
-  </p>
+  <header class="top-row">
+    <p class="intro">
+      <span class="w1">WELCOME</span> <span class="w2">TO</span> <span class="w3">MY</span> <span class="w4">PERSONAL</span> <span class="w5">WEBPAGE.</span><br>
+      <span class="w6">I'M</span> <span class="w2">ANDRÉ VIDIGAL</span> <span class="w1">AND</span> <span class="w3">YOU</span> <span class="w4">can</span> <span class="w5">FIND</span> <span class="w2">MORE</span> <span class="w6">ABOUT</span> <span class="w1">MY</span> <span class="w4">WORK</span> <span class="w3">AND</span> <span class="w2">MY</span> <span class="w5">CONTACTS</span> <span class="w6">BELOW</span>
+    </p>
+    <p class="contacts" id="contacts" aria-hidden="true">
+      <a href="mailto:andremvidigal@gmail.com" tabindex="-1">andremvidigal@gmail.com</a>
+      <span class="contacts-sep" aria-hidden="true"> | </span>
+      <a href="https://www.linkedin.com/in/andrevidigal/" target="_blank" rel="noopener noreferrer" tabindex="-1">https://www.linkedin.com/in/andrevidigal/</a>
+    </p>
+  </header>
 
   <div class="sprite-run-wrapper">
     <div class="sprite sprite-archer-run" id="sprite-el" role="button" tabindex="0" aria-label="Make Robin Hood draw his bow"></div>
@@ -23,11 +30,20 @@
   <script>
   (function(){
     var el = document.getElementById('sprite-el');
+    var contacts = document.getElementById('contacts');
     if (!el) return;
 
     function run(){
       if (el.classList.contains('is-running')) return;
       el.classList.add('is-running');
+    }
+
+    function revealContacts(){
+      if (!contacts || contacts.classList.contains('is-visible')) return;
+      contacts.classList.add('is-visible');
+      contacts.setAttribute('aria-hidden', 'false');
+      var links = contacts.querySelectorAll('a');
+      for (var i = 0; i < links.length; i++) links[i].removeAttribute('tabindex');
     }
 
     el.addEventListener('click', run);
@@ -36,8 +52,21 @@
     });
     el.addEventListener('animationend', function(){
       el.classList.remove('is-running');
+      revealContacts();
     });
   })();
   </script>
+  <p class="about">
+    I love building things. Great products, great teams, and the environments that allow both to thrive.
+  </p>
+  <p class="about">
+    Over the past 20+ years, I've worked across different industries, technologies, and stages of organisational growth. From helping building new hubs, to bringing Agile thinking into industrial environments, I've always been drawn to the moments when things need to change — when teams need a new direction, organisations need to rethink how they work, or ambitious ideas need the right people and structure to become reality.
+  </p>
+  <p class="about">
+    I'm at my best connecting the dots between people, strategy, and technology. I enjoy challenging the status quo, experimenting with new ways of working, making complexity feel manageable, and helping teams find their rhythm — especially when the ground is shifting beneath their feet.
+  </p>
+  <p class="about">
+    I believe transformation isn't about frameworks or fancy slides. It's about people, trust, curiosity, and making things work better. And I'm always excited about what we can build next.
+  </p>
 </body>
 </html>
