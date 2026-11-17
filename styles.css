@@ -62,7 +62,7 @@ html, body {
   background-image: url("assets/robin-hood-sprite.png");
   background-repeat: no-repeat;
   background-size: 900px 2887.5px;
-  background-position: 0 0;
+  background-position: -675px -2100px; /* frame 36: bow down */
 }
 
 .sprite-archer-run {
