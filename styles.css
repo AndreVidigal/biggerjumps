@@ -43,25 +43,52 @@ html, body {
   font-family: 'Ostrich Sans', sans-serif;
 }
 
-/* Sprite: run right / run left, 8 frames each, scaled to 75% (225×263px), 4×2 grid */
+/* Sprite: robin-hood-sprite.png is a 4×11 grid of 300×350px frames, shown at 75% (225×262.5px).
+   Frames 29–36 (rows 8–9) are the bow-draw animation played on click. */
 .sprite-run-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   width: 100%;
-  min-height: 263px;
+  height: 263px;
   margin: 2rem 0;
+  overflow: hidden;
 }
 
 .sprite {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 112.5px);
   width: 225px;
-  height: 263px;
+  height: 262.5px;
+  background-image: url("assets/robin-hood-sprite.png");
   background-repeat: no-repeat;
-  background-size: 900px 525px;
+  background-size: 900px 2887.5px;
+  background-position: 0 0;
 }
 
 .sprite-archer-run {
-  background-position: 0 0; /* image and position updated by JS */
+  cursor: pointer;
+}
+
+.sprite-archer-run:focus-visible {
+  outline: 2px dashed var(--color-very-light-gray);
+  outline-offset: 4px;
+}
+
+.sprite-archer-run.is-running {
+  cursor: default;
+  animation: sprite-frames-29-36 1.2s steps(1, end) 1;
+}
+
+@keyframes sprite-frames-29-36 {
+  0%     { background-position: 0       -1837.5px; }
+  12.5%  { background-position: -225px  -1837.5px; }
+  25%    { background-position: -450px  -1837.5px; }
+  37.5%  { background-position: -675px  -1837.5px; }
+  50%    { background-position: 0       -2100px; }
+  62.5%  { background-position: -225px  -2100px; }
+  75%    { background-position: -450px  -2100px; }
+  87.5%  { background-position: -675px  -2100px; }
+  100%   { background-position: -675px  -2100px; }
 }
 
 .sprite-link-wrap {
